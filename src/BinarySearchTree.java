@@ -73,5 +73,43 @@ public class BinarySearchTree<T extends Comparable<T>> implements SortedCollecti
   public void clear() {
     this.root = null;
   }
+protected void rotate(BinaryNode<T> child, BinaryNode<T> parent)
+    throws NullPointerException, IllegalArgumentException {
+  if (child == null || parent == null)
+    throw new NullPointerException("child and parent cannot be null");
 
+  if (child.getUp() != parent)
+    throw new IllegalArgumentException("child is not a child of parent");
+
+  BinaryNode<T> grandparent = parent.getUp();
+
+  if (parent.getLeft() == child) {
+    // right rotation
+    parent.setLeft(child.getRight());
+    if (child.getRight() != null)
+      child.getRight().setUp(parent);
+
+    child.setRight(parent);
+  } else if (parent.getRight() == child) {
+    // left rotation
+    parent.setRight(child.getLeft());
+    if (child.getLeft() != null)
+      child.getLeft().setUp(parent);
+
+    child.setLeft(parent);
+  } else {
+    throw new IllegalArgumentException("child is not a direct child of parent");
+  }
+
+  parent.setUp(child);
+  child.setUp(grandparent);
+
+  if (grandparent == null) {
+    this.root = child;
+  } else if (grandparent.getLeft() == parent) {
+    grandparent.setLeft(child);
+  } else {
+    grandparent.setRight(child);
+  }
+}
 }
